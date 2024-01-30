@@ -1,0 +1,15 @@
+server:
+  port: 8880
+# Use config file by file store.
+spring:
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/config
+          # Use config files on github url.
+          #spring.cloud.config.server.git.uri
+          #spring.cloud.config.server.git.username
+          #spring.cloud.config.server.git.password
