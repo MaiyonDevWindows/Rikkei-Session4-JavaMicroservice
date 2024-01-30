@@ -7,5 +7,5 @@ eureka:
   instance:
     hostname: localhost
   client:
-    registry-with-eureka: false
+    register-with-eureka: false
     fetch-registry: false

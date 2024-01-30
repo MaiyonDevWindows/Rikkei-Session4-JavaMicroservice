@@ -1,0 +1,14 @@
+version: '3'
+services:
+  spring-cloud-config:
+    build:
+      context: ./SpringCloudConfig
+    ports:
+      - "8880:8880"
+  eureka-server:
+    build:
+      context: ./EurekaServer
+    ports:
+      - "8881:8881"
+    depends_on:
+      - spring-cloud-config
