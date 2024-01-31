@@ -1,11 +1,15 @@
 version: '3'
 services:
   spring-cloud-config:
+    container_name: spring-cloud-config
+    network_mode: host
     build:
       context: ./SpringCloudConfig
     ports:
       - "8880:8880"
   eureka-server:
+    container_name: eureka-server
+    network_mode: host
     build:
       context: ./EurekaServer
     ports:
