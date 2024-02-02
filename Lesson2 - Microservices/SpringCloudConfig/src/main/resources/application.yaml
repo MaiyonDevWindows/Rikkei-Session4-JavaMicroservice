@@ -1,5 +1,6 @@
 server:
   port: 8880
+  address: 0.0.0.0
 # Use config file by file store.
 spring:
   profiles:

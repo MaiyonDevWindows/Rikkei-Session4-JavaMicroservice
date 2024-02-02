@@ -2,17 +2,29 @@ version: '3'
 services:
   spring-cloud-config:
     container_name: spring-cloud-config
-    network_mode: host
+    networks:
+      - maiyon-network
     build:
       context: ./SpringCloudConfig
     ports:
       - "8880:8880"
+    expose:
+      - 8880
   eureka-server:
     container_name: eureka-server
-    network_mode: host
+    networks:
+      - maiyon-network
+    environment:
+      - CLOUD-URL=spring-cloud-config
+      - CLOUD-PORT=8880
     build:
       context: ./EurekaServer
     ports:
       - "8881:8881"
+    expose:
+      - 8881
     depends_on:
       - spring-cloud-config
+networks:
+  maiyon-network:
+    driver: bridge

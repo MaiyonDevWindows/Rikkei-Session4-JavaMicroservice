@@ -7,13 +7,13 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class SpringApiGatewayApplication {
+public class SpringAPIGateway {
     public static void main(String[] args) {
-        SpringApplication.run(SpringApiGatewayApplication.class, args);
+        SpringApplication.run(SpringAPIGateway.class, args);
     }
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder){
         return builder.routes()
-                .route(r -> r.path("/students/**").uri("http://admin-pc:8081")).build();
+                .route(r -> r.path("/students/**").uri("http://localhost:8886/")).build();
     }
 }
