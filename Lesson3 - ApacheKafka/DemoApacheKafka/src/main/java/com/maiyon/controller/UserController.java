@@ -15,7 +15,7 @@ public class UserController {
     KafkaTemplate<String, Object> kafkaTemplate;
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user){
-        kafkaTemplate.send("apache-demo", user);
+        kafkaTemplate.send("apache-kafka-demo", user);
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 }
