@@ -19,12 +19,4 @@ public class CategoryRequest {
     private String categoryName;
     private String description;
     private Boolean activeStatus;
-    public static Category entityMap(CategoryRequest categoryRequest){
-        return Category.builder()
-            .categoryId(categoryRequest.categoryId)
-            .categoryName(categoryRequest.categoryName)
-            .description(categoryRequest.description)
-                .activeStatus(categoryRequest.activeStatus? ActiveStatus.ACTIVE: ActiveStatus.INACTIVE)
-            .build();
-    }
 }

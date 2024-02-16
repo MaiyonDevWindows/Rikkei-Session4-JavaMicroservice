@@ -40,7 +40,7 @@ public class CategoryController {
         else pageable = PageRequest.of(page, limit, Sort.by(Sort.Direction.ASC, sortBy));
         try{
             Page<CategoryResponse> categories = categoryService.findActiveCategoriesToPage(pageable)
-                    .map(CategoryResponse::entityMap);
+                    .map(categoryService::entityMap);
             if(!categories.isEmpty()){
                 logger.info("Get categories at page {} - successful.", page);
                 return new ResponseEntity<>(
@@ -74,9 +74,9 @@ public class CategoryController {
         if(category.isPresent()){
             return new ResponseEntity<>(
                     new Response<>(
-                            ResponseStatus.SUCCESS,
-                            HttpStatus.OK.name(),
-                            CategoryResponse.entityMap(category.get()))
+                        ResponseStatus.SUCCESS,
+                        HttpStatus.OK.name(),
+                        categoryService.entityMap(category.get()))
             , HttpStatus.OK);
         }
         return new ResponseEntity<>(
@@ -98,7 +98,7 @@ public class CategoryController {
                     new Response<>(
                             ResponseStatus.SUCCESS,
                             HttpStatus.CREATED.name(),
-                            CategoryResponse.entityMap(category.get()))
+                            categoryService.entityMap(category.get()))
                     , HttpStatus.CREATED);
         }
         logger.error("Create category - failure.");
@@ -123,7 +123,7 @@ public class CategoryController {
                     new Response<>(
                             ResponseStatus.SUCCESS,
                             HttpStatus.OK.name(),
-                            CategoryResponse.entityMap(category.get()))
+                            categoryService.entityMap(category.get()))
                     , HttpStatus.OK);
         }
         logger.error("Update category - failure.");

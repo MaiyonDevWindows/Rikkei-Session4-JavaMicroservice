@@ -1,0 +1,20 @@
+server:
+  port: 8885
+spring:
+  application:
+    name: auth-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${authDbHost:localhost}:${authDbPort:3306}/${authDbName:auth-db}?createDatabaseIfNotExist=true
+    username: ${authDbUsername:root}
+    password: ${authDbPassword:S0meth!ng976431}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  jooq:
+    sql-dialect: org.hibernate.dialect.MySQLDialect
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${eurekaServerUrl:localhost}:${eurekaServerPort:8881}/eureka/

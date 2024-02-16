@@ -2,6 +2,7 @@ package org.maiyon.service;
 
 import org.maiyon.CustomException;
 import org.maiyon.model.dto.request.CategoryRequest;
+import org.maiyon.model.dto.response.CategoryResponse;
 import org.maiyon.model.entity.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,5 +16,6 @@ public interface CategoryService {
     Optional<Category> save(Category category) throws CustomException;
     Optional<Category> save(CategoryRequest categoryRequest) throws CustomException;
     Boolean deleteById(Long categoryId);
-
+    Category entityMap(CategoryRequest categoryRequest);
+    CategoryResponse entityMap(Category category);
 }

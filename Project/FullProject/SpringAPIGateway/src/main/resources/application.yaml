@@ -1,0 +1,11 @@
+server:
+  port: 8882
+spring:
+  main:
+    web-application-type: reactive
+auth.service.url: ${authServiceUrl:localhost}
+auth.service.port: ${authServicePort:8885}
+product.service.url: ${productServiceUrl:localhost}
+product.service.port: ${productServicePort:8886}
+order.service.url: ${orderServiceUrl:localhost}
+order.service.port: ${orderServicePort:8887}

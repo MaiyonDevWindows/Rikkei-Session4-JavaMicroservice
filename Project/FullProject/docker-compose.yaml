@@ -1,9 +1,8 @@
-version: '3'
+version: '3.9'
 name: spring-microservices
 services:
   spring-cloud:
     container_name: spring-cloud
-    restart: always
     networks:
       - maiyon-network
     build:
@@ -16,7 +15,6 @@ services:
       test: [ "CMD-SHELL", "netstat -an | grep -q 8880" ]
   eureka-server:
     container_name: eureka-server
-    restart: always
     networks:
       - maiyon-network
     environment:
@@ -28,9 +26,70 @@ services:
       - "8881:8881"
     expose:
       - 8881
+    healthcheck:
+      test: [ "CMD-SHELL", "netstat -an | grep -q 8881" ]
     depends_on:
       spring-cloud:
         condition: service_healthy
+  auth-host:
+    image: 'mysql:latest'
+    container_name: auth-host
+    networks:
+      - maiyon-network
+    restart: always
+    environment:
+      - MYSQL_DATABASE=auth-db
+      - MYSQL_ROOT_PASSWORD=S0meth!ng976431
+    ports:
+      - '8871:3306'
+    expose:
+      - 3306
+  auth-service:
+    container_name: auth-service
+    networks:
+      - maiyon-network
+    build:
+      context: ./AuthService
+    ports:
+      - "8885:8885"
+    expose:
+      - 8885
+    environment:
+      - containerName=auth-service
+      - springCloudUrl=spring-cloud
+      - springCloudPort=8880
+      - authDbHost=auth-host
+      - authDbPort=3306
+      - authDbName=auth-db
+      - authDbUsername=root
+      - authDbPassword=S0meth!ng976431
+      - eurekaServerUrl=eureka-server
+      - eurekaServerPort=8881
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "netstat -an | grep -q 8885" ]
+  spring-api-gateway:
+    container_name: spring-api-gateway
+    networks:
+      - maiyon-network
+    build:
+      context: ./SpringAPIGateway
+    ports:
+      - "8882:8882"
+    expose:
+      - 8882
+    environment:
+      - authServiceUrl=auth-service
+      - authServicePort=8885
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      auth-service:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "netstat -an | grep -q 8882" ]
 networks:
   maiyon-network:
     driver: bridge

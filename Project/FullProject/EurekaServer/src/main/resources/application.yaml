@@ -3,17 +3,13 @@ spring:
     config:
       discovery:
         enabled: true
-      name: eureka-server
-      uri: http://${springCloudUrl}:${springCloudPort}/
-      enabled: true
   application:
     name: eureka-server
-
 server:
   port: 8881
 eureka:
-  instance:
-    hostname: localhost
   client:
     register-with-eureka: false
     fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:8881/eureka

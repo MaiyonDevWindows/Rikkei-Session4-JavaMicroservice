@@ -1,6 +1,8 @@
 server:
   port: 8880
 spring:
+  application:
+    name: spring-cloud
   profiles:
     active: native
   cloud:

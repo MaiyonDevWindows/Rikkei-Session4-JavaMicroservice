@@ -42,7 +42,7 @@ public class Product {
     @Enumerated(EnumType.ORDINAL)
     @ColumnDefault(value = "true")
     @Column(name = "status", columnDefinition = "BIT(1)")
-    private ActiveStatus status;
+    private ActiveStatus activeStatus;
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     private Category category;
@@ -51,7 +51,7 @@ public class Product {
         if(this.sku == null){
             this.sku = UUID.randomUUID().toString();
         }
-        this.status = (this.status == null || this.status == ActiveStatus.ACTIVE) ?
+        this.activeStatus = (this.activeStatus == null || this.activeStatus == ActiveStatus.ACTIVE) ?
                 ActiveStatus.ACTIVE : ActiveStatus.INACTIVE;
     }
     @PreUpdate
