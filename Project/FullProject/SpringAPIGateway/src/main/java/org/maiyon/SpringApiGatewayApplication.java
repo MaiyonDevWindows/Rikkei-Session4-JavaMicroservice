@@ -1,6 +1,5 @@
 package org.maiyon;
 
-import jakarta.annotation.PostConstruct;
 import org.maiyon.config.AuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,10 +35,10 @@ public class SpringApiGatewayApplication {
     public RouteLocator routeLocator(RouteLocatorBuilder builder){
         return builder
             .routes()
-            .route(r->r.path("/v1/permit/auth/**").uri("http://" + authServiceUrl + ":" + authServicePort + "/"))
-            .route(r->r.path("/products/**", "/categories/**",
-                "/v1/admin/product/**","/v1/user/product/**","/v1/user/product","/v1/admin/product",
-                "/v1/user/categories/**","/v1/admin/categories/**","/v1/admin/categories/","/v1/user/categories/")
+            .route(r->r.path("/v1/auth/**").uri("http://" + authServiceUrl + ":" + authServicePort + "/"))
+            .route(r->r.path("/v1/products/**", "/v1/categories/**",
+                "/v1/admin/categories","/v1/admin/categories/**","/v1/user/categories","/v1/user/categories/**",
+                "/v1/admin/products","/v1/admin/products/**","/v1/user/products","/v1/user/products/**")
                     .filters(f->f.filters(authenticationFilter)).uri("http://" + productServiceUrl + ":" + productServicePort + "/"))
             .route(r->r.path("/v1/admin/order","/v1/user/order","/v1/admin/shopping-cart","/v1/user/shopping-cart")
                     .filters(f->f.filters(authenticationFilter)).uri("http://" + orderServiceUrl + ":" + orderServicePort + "/"))

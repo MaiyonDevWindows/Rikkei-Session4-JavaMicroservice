@@ -17,4 +17,6 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://${eurekaServerUrl:localhost}:${eurekaServerPort:8881}/eureka/
+      defaultZone: http://${eurekaServerUrl:localhost}:${eurekaServerPort:7881}/eureka/
+expiredTime: 3153600000
+secretKey: Maiyonaisu1102

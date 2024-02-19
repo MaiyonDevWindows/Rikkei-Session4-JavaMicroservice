@@ -17,11 +17,13 @@ public class UserDetailService implements UserDetailsService {
     private UserRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> userOptional=userRepository.findByUserName(username);
+        Optional<User> userOptional = userRepository.findByUserName(username);
         if(userOptional.isPresent()){
             User user=userOptional.get();
             return UserPrinciple.builder()
-                .user(user).authorities(user.getRoles().stream().map(item -> new SimpleGrantedAuthority(item.getRoleName())).toList())
+                .user(user).authorities(user.getRoles().stream().map(
+                        role -> new SimpleGrantedAuthority(role.getRoleName().toString())).toList()
+                    )
                 .build();
         }
         return null;

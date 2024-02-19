@@ -1,10 +1,8 @@
 package org.maiyon.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+import org.maiyon.model.enums.RoleName;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,6 +13,8 @@ import lombok.*;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "role_id")
     private Long roleId;
-    private String roleName;
+    @Enumerated(EnumType.STRING)
+    private RoleName roleName;
 }

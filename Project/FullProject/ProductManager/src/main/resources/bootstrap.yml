@@ -1,0 +1,6 @@
+spring:
+  cloud:
+    config:
+      name: ${containerName:product-service}
+      uri: http://${springCloudUrl:localhost}:${springCloudPort:7880}/
+      enabled: true

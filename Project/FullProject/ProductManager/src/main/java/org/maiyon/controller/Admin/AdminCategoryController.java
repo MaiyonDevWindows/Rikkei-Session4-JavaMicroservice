@@ -1,10 +1,10 @@
-package org.maiyon.controller;
+package org.maiyon.controller.Admin;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.maiyon.CustomException;
 import org.maiyon.model.APIEntity.Response;
-import org.maiyon.model.APIEntity.ResponseStatus;
+import org.maiyon.model.APIEntity.WrapperStatus;
 import org.maiyon.model.dto.request.CategoryRequest;
 import org.maiyon.model.dto.response.CategoryResponse;
 import org.maiyon.model.entity.Category;
@@ -24,8 +24,8 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/categories")
-public class CategoryController {
+@RequestMapping("/v1/admin/categories")
+public class AdminCategoryController {
     private final CategoryService categoryService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @GetMapping
@@ -33,8 +33,8 @@ public class CategoryController {
             @RequestParam(defaultValue = "5",name = "limit") Integer limit,
             @RequestParam(defaultValue = "0",name = "page") Integer page,
             @RequestParam(defaultValue = "categoryName",name = "sort") String sortBy,
-            @RequestParam(defaultValue = "asc", name = "direction") String orderBy){
-        Pageable pageable = null;
+            @RequestParam(defaultValue = "asc", name = "direction") String orderBy) throws CustomException{
+        Pageable pageable;
         if(orderBy.equals("desc"))
             pageable = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, sortBy));
         else pageable = PageRequest.of(page, limit, Sort.by(Sort.Direction.ASC, sortBy));
@@ -45,46 +45,31 @@ public class CategoryController {
                 logger.info("Get categories at page {} - successful.", page);
                 return new ResponseEntity<>(
                         new Response<>(
-                                ResponseStatus.SUCCESS,
+                                WrapperStatus.SUCCESS,
                                 HttpStatus.OK.name(),
                                 categories.getContent())
                         , HttpStatus.OK);
             }
             logger.error("Get categories at page {} - failure", page);
-            return new ResponseEntity<>(
-                    new Response<>(
-                            ResponseStatus.FAILURE,
-                            HttpStatus.BAD_REQUEST.name(),
-                            "Categories page is empty.")
-                    , HttpStatus.BAD_REQUEST);
+            throw new CustomException("Categories page is empty.");
         } catch (Exception e){
             logger.error("Get categories at page {} - failure", page);
-            return new ResponseEntity<>(
-                    new Response<>(
-                            ResponseStatus.FAILURE,
-                            HttpStatus.BAD_REQUEST.name(),
-                            "Categories page out of range.")
-                    , HttpStatus.BAD_REQUEST);
+            throw new CustomException("Categories page out of range.");
         }
     }
     @GetMapping("/{categoryId}")
-    public ResponseEntity<?> getCategoryById(@PathVariable("categoryId") Long categoryId){
+    public ResponseEntity<?> getCategoryById(@PathVariable("categoryId") Long categoryId) throws CustomException{
         logger.info("Find category by categoryId.");
         Optional<Category> category = categoryService.findById(categoryId);
         if(category.isPresent()){
             return new ResponseEntity<>(
                     new Response<>(
-                        ResponseStatus.SUCCESS,
+                        WrapperStatus.SUCCESS,
                         HttpStatus.OK.name(),
                         categoryService.entityMap(category.get()))
             , HttpStatus.OK);
         }
-        return new ResponseEntity<>(
-                new Response<>(
-                        ResponseStatus.FAILURE,
-                        HttpStatus.BAD_REQUEST.name(),
-                        "Category is not exists.")
-        , HttpStatus.BAD_REQUEST);
+        throw new CustomException("Category is not exists.");
     }
     @PostMapping
     public ResponseEntity<?> createCategory(
@@ -96,18 +81,13 @@ public class CategoryController {
             logger.info("Create category - success.");
             return new ResponseEntity<>(
                     new Response<>(
-                            ResponseStatus.SUCCESS,
+                            WrapperStatus.SUCCESS,
                             HttpStatus.CREATED.name(),
                             categoryService.entityMap(category.get()))
                     , HttpStatus.CREATED);
         }
         logger.error("Create category - failure.");
-        return new ResponseEntity<>(
-                new Response<>(
-                        ResponseStatus.FAILURE,
-                        HttpStatus.BAD_REQUEST.name(),
-                        "Create category - failure.")
-                , HttpStatus.BAD_REQUEST);
+        throw new CustomException("Create category - failure.");
     }
     @PutMapping("/{categoryId}")
     public ResponseEntity<?> overwriteCategory(
@@ -121,22 +101,17 @@ public class CategoryController {
             logger.info("Update category - success.");
             return new ResponseEntity<>(
                     new Response<>(
-                            ResponseStatus.SUCCESS,
+                            WrapperStatus.SUCCESS,
                             HttpStatus.OK.name(),
                             categoryService.entityMap(category.get()))
                     , HttpStatus.OK);
         }
         logger.error("Update category - failure.");
-        return new ResponseEntity<>(
-                new Response<>(
-                        ResponseStatus.FAILURE,
-                        HttpStatus.BAD_REQUEST.name(),
-                        "Update category - failure.")
-                , HttpStatus.BAD_REQUEST);
+        throw new CustomException("Update category - failure.");
     }
-    @PatchMapping("/{id}")
+    @PatchMapping("/{categoryId}")
     public ResponseEntity<?> updateCategory(
-            @PathVariable("id") Long categoryId,
+            @PathVariable("categoryId") Long categoryId,
             @RequestBody @Valid CategoryRequest categoryRequest) throws CustomException {
         logger.info("Update category by category Id.");
         Optional<Category> checkCategory = categoryService.findById(categoryId);
@@ -155,31 +130,21 @@ public class CategoryController {
             Optional<Category> updatedCategory = categoryService.save(updateCategory);
             return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
         }logger.error("Update category - failure.");
-        return new ResponseEntity<>(
-                new Response<>(
-                        ResponseStatus.FAILURE,
-                        HttpStatus.BAD_REQUEST.name(),
-                        "Update category - failure.")
-                , HttpStatus.BAD_REQUEST);
+        throw new CustomException("Update category - failure.");
     }
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<?> deleteCategory(@PathVariable("categoryId") Long categoryId){
+    public ResponseEntity<?> deleteCategory(@PathVariable("categoryId") Long categoryId) throws CustomException{
         Boolean deleteCategory = categoryService.deleteById(categoryId);
         if(deleteCategory){
             logger.info("Delete category - success.");
             return new ResponseEntity<>(
                     new Response<>(
-                            ResponseStatus.SUCCESS,
+                            WrapperStatus.SUCCESS,
                             HttpStatus.OK.name(),
                             "Delete category by category id successfully.")
                     , HttpStatus.OK);
         }
         logger.error("Delete category - failure.");
-        return new ResponseEntity<>(
-                new Response<>(
-                        ResponseStatus.FAILURE,
-                        HttpStatus.BAD_REQUEST.name(),
-                        "Delete category by category id failure.")
-                , HttpStatus.BAD_REQUEST);
+        throw new CustomException("Delete category by category id failure.");
     }
 }

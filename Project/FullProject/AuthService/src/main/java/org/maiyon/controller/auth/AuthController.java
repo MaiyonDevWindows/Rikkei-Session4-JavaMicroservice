@@ -14,15 +14,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/v1/permit/auth")
+@RequestMapping("/v1/auth")
 public class AuthController {
     @Autowired
     private UserService userService;
-    @PostMapping("/login")
+    @PostMapping("/sign-in")
     public ResponseEntity<UserResponse> handleLogin(@RequestBody @Valid UserLogin userLogin){
         return new ResponseEntity<>(userService.handleLogin(userLogin), HttpStatus.OK);
     }
-    @PostMapping("/register")
+    @PostMapping("/sign-up")
     public ResponseEntity<String> handleRegister(@RequestBody @Valid UserRegister userRegister){
         return new ResponseEntity<>(userService.handleRegister(userRegister),HttpStatus.CREATED);
     }

@@ -3,9 +3,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ProductManager-Service?createDatabaseIfNotExist=true
-    username: root
-    password: S0meth!ng976431
+    url: jdbc:mysql://${productDbHost:localhost}:${productDbPort:3306}/${productDbName:product-db}?createDatabaseIfNotExist=true
+    username: ${productDbUsername:root}
+    password: ${productDbPassword:S0meth!ng976431}
   jpa:
     hibernate:
       ddl-auto: update
@@ -13,13 +13,12 @@ spring:
   jooq:
     sql-dialect: org.hibernate.dialect.MySQLDialect
   application:
-    name: ProductManager
+    name: product-service
   cloud:
     config:
-      enabled: true
-      uri: http://localhost:8880/
-      name: product-manager
+      discovery:
+        enabled: true
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8881/eureka/
+      defaultZone: http://${eurekaServerUrl:localhost}:${eurekaServerPort:7881}/eureka/

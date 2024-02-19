@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Objects;
 
 @Component
@@ -21,35 +22,33 @@ public class AuthenticationFilter implements GatewayFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         if(!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)){
-            if(exchange.getRequest().getURI().getPath().contains("/permit")){
+            if(
+                exchange.getRequest().getURI().getPath().contains("/auth") ||
+                exchange.getRequest().getURI().getPath().contains("/v1/categories") ||
+                exchange.getRequest().getURI().getPath().contains("/v1/products")
+            ) {
                 return chain.filter(exchange);
-            }else {
-                return sendError(exchange, HttpStatus.UNAUTHORIZED);
             }
+            else return sendError(exchange, HttpStatus.UNAUTHORIZED);
         }
-        String authHeader= Objects.requireNonNull(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION)).get(0);
-        if(authHeader!=null && authHeader.startsWith("Bearer ")){
+        String authHeader= Objects.requireNonNull(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION)).getFirst();
+        if(authHeader != null && authHeader.startsWith("Bearer ")){
             String token=authHeader.substring(7);
             try{
                 jwtUtils.validateToken(token);
-                String roleName= jwtUtils.getRoleNameFromToken(token);
-                if(roleName.equals("ROLE_ADMIN")){
-                    if(exchange.getRequest().getURI().getPath().contains("/admin")){
+                List<String> roles = jwtUtils.getRolesFromToken(token);
+                if(roles.contains("ROLE_ADMIN"))
+                    if(exchange.getRequest().getURI().getPath().contains("/admin"))
                         return chain.filter(exchange);
-                    }
-                } else if (roleName.equals("ROLE_USER")) {
-                    if(exchange.getRequest().getURI().getPath().contains("/user")){
+                if (roles.contains("ROLE_USER"))
+                    if(exchange.getRequest().getURI().getPath().contains("/user"))
                         return chain.filter(exchange);
-                    }
-                }else {
-                    return sendError(exchange,HttpStatus.UNAUTHORIZED);
-                }
+                return sendError(exchange,HttpStatus.UNAUTHORIZED);
             }catch (Exception e){
                 return sendError(exchange,HttpStatus.UNAUTHORIZED);
             }
         }
         return sendError(exchange,HttpStatus.UNAUTHORIZED);
-
     }
 
     private Mono<Void> sendError(ServerWebExchange exchange, HttpStatus httpStatus){

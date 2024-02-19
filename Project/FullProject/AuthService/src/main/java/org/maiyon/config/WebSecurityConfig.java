@@ -34,10 +34,12 @@ public class WebSecurityConfig {
         return httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests((auth) ->
-                        auth.requestMatchers("v1/permit/**").permitAll()
-                                .requestMatchers("v1/admin/**").hasAuthority("ROLE_ADMIN")
-                                .requestMatchers("v1/user/**").hasAnyAuthority("ROLE_USER")
-                                .anyRequest().authenticated()
+                        auth
+                            .requestMatchers("v1/auth/**").permitAll()
+                            .requestMatchers("v1/admin/**").hasAuthority("ROLE_ADMIN")
+                            .requestMatchers("v1/user/**").hasAuthority("ROLE_USER")
+                            .requestMatchers("v1/**").permitAll()
+                            .anyRequest().authenticated()
                 ).exceptionHandling((auth) -> auth.authenticationEntryPoint(jwtEntryPoint))
                 .sessionManagement((auth) -> auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class).build();

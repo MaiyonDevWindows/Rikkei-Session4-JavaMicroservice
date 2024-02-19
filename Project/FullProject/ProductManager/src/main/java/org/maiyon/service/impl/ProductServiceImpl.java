@@ -1,6 +1,7 @@
 package org.maiyon.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.maiyon.CustomException;
 import org.maiyon.model.dto.request.ProductRequest;
 import org.maiyon.model.dto.response.ProductResponse;
 import org.maiyon.model.entity.Product;
@@ -11,6 +12,8 @@ import org.maiyon.service.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -18,6 +21,12 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+
+    @Override
+    public List<Product> findAllToList() {
+        return productRepository.findAll();
+    }
+
     @Override
     public Page<Product> findAllToPage(Pageable pageable) {
         return productRepository.findAll(pageable);
@@ -43,9 +52,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<Product> save(ProductRequest productRequest) {
+    public Optional<Product> save(ProductRequest productRequest) throws CustomException {
         Product product = entityMap(productRequest);
-        return Optional.empty();
+        if(productRepository.findFirstByProductName(productRequest.getProductName()).isPresent())
+            throw new CustomException("Product name is already exists.");
+        return Optional.of(productRepository.save(product));
     }
 
     @Override

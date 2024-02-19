@@ -2,18 +2,20 @@ version: '3.9'
 name: spring-microservices
 services:
   spring-cloud:
+    image: spring-cloud-image
     container_name: spring-cloud
     networks:
       - maiyon-network
     build:
       context: ./SpringCloud
     ports:
-      - "8880:8880"
+      - "7880:8880"
     expose:
       - 8880
     healthcheck:
       test: [ "CMD-SHELL", "netstat -an | grep -q 8880" ]
   eureka-server:
+    image: eureka-server-image
     container_name: eureka-server
     networks:
       - maiyon-network
@@ -23,7 +25,7 @@ services:
     build:
       context: ./EurekaServer
     ports:
-      - "8881:8881"
+      - "7881:8881"
     expose:
       - 8881
     healthcheck:
@@ -41,17 +43,18 @@ services:
       - MYSQL_DATABASE=auth-db
       - MYSQL_ROOT_PASSWORD=S0meth!ng976431
     ports:
-      - '8871:3306'
+      - '7871:3306'
     expose:
       - 3306
   auth-service:
+    image: auth-service-image
     container_name: auth-service
     networks:
       - maiyon-network
     build:
       context: ./AuthService
     ports:
-      - "8885:8885"
+      - "7885:8885"
     expose:
       - 8885
     environment:
@@ -70,23 +73,70 @@ services:
         condition: service_healthy
     healthcheck:
       test: [ "CMD-SHELL", "netstat -an | grep -q 8885" ]
+  product-host:
+    image: 'mysql:latest'
+    container_name: product-host
+    networks:
+      - maiyon-network
+    restart: always
+    environment:
+      - MYSQL_DATABASE=product-db
+      - MYSQL_ROOT_PASSWORD=S0meth!ng976431
+    ports:
+      - '7872:3306'
+    expose:
+      - 3306
+  product-service:
+    image: product-service-image
+    container_name: product-service
+    networks:
+      - maiyon-network
+    build:
+      context: ./ProductManager
+    ports:
+      - "7886:8886"
+    expose:
+      - 8886
+    environment:
+      - containerName=product-service
+      - springCloudUrl=spring-cloud
+      - springCloudPort=8880
+      - productDbHost=product-host
+      - productDbPort=3306
+      - productDbName=product-db
+      - productDbUsername=root
+      - productDbPassword=S0meth!ng976431
+      - eurekaServerUrl=eureka-server
+      - eurekaServerPort=8881
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "netstat -an | grep -q 8886" ]
   spring-api-gateway:
+    image: api-gateway-image
     container_name: spring-api-gateway
     networks:
       - maiyon-network
     build:
       context: ./SpringAPIGateway
     ports:
-      - "8882:8882"
+      - "7882:8882"
     expose:
       - 8882
     environment:
       - authServiceUrl=auth-service
       - authServicePort=8885
+      - productServiceUrl=product-service
+      - productServicePort=8886
+      - orderServiceUrl=order-service
+      - orderServicePort=8887
     depends_on:
       eureka-server:
         condition: service_healthy
       auth-service:
+        condition: service_healthy
+      product-service:
         condition: service_healthy
     healthcheck:
       test: [ "CMD-SHELL", "netstat -an | grep -q 8882" ]

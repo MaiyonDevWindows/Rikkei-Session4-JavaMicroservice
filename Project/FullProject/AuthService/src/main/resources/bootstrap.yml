@@ -2,5 +2,5 @@ spring:
   cloud:
     config:
       name: ${containerName:auth-service}
-      uri: http://${springCloudUrl:localhost}:${springCloudPort:8880}/
+      uri: http://${springCloudUrl:localhost}:${springCloudPort:7880}/
       enabled: true

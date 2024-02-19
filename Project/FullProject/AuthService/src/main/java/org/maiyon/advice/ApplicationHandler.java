@@ -1,6 +1,7 @@
 package org.maiyon.advice;
 
 import org.maiyon.CustomException;
+import org.maiyon.model.APIEntity.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,7 +25,11 @@ public class ApplicationHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(CustomException.class)
-    public String handleExceptionUser(CustomException e){
-        return e.getMessage();
+    public ResponseEntity<?> handleExceptionUser(CustomException e){
+        return new ResponseEntity<>(new Response<>(
+                WrapperStatus.FAILURE,
+                HttpStatus.BAD_REQUEST.name(),
+                e.getMessage()
+        ), HttpStatus.BAD_REQUEST);
     }
 }

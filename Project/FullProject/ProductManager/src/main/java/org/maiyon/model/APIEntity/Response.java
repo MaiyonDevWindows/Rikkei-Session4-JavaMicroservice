@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @Builder
 public class Response<T> {
-    private ResponseStatus status;
+    private WrapperStatus status;
     private String statusCode;
     private T content;
 }

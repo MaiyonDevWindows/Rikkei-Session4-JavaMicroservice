@@ -1,0 +1,24 @@
+server:
+  port: 8887
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${orderDbHost:localhost}:${orderDbPort:3306}/${orderDbName:order-db}?createDatabaseIfNotExist=true
+    username: ${orderDbUsername:root}
+    password: ${orderDbPassword:S0meth!ng976431}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  jooq:
+    sql-dialect: org.hibernate.dialect.MySQLDialect
+  application:
+    name: order-service
+  cloud:
+    config:
+      discovery:
+        enabled: true
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${eurekaServerUrl:localhost}:${eurekaServerPort:7881}/eureka/

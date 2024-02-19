@@ -1,5 +1,5 @@
 package org.maiyon.model.APIEntity;
 
-public enum ResponseStatus {
+public enum WrapperStatus {
     FAILURE, SUCCESS
 }

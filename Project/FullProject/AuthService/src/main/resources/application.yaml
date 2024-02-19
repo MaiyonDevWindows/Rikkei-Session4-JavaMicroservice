@@ -3,5 +3,3 @@ spring:
     config:
       discovery:
         enabled: true
-expiredTime: 9000000
-secretKey: Maiyonaisu1102

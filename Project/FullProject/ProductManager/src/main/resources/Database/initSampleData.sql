@@ -1,5 +1,4 @@
-USE `productmanager-service`;
-
+USE `product-db`;
 INSERT INTO category (category_id, category_name, description, active_status)
     VALUES
         (1, 'Áo', 'Mô tả', true),
@@ -12,5 +11,3 @@ INSERT INTO category (category_id, category_name, description, active_status)
         (8, 'Bàn phím', 'Mô tả', true),
         (9, 'Tai nghe', 'Mô tả', false),
         (10, 'Đèn màn hình', 'Mô tả', true);
-
-drop database `productmanager-service`

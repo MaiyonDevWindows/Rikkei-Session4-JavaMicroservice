@@ -4,8 +4,9 @@ spring:
   main:
     web-application-type: reactive
 auth.service.url: ${authServiceUrl:localhost}
-auth.service.port: ${authServicePort:8885}
+auth.service.port: ${authServicePort:7885}
 product.service.url: ${productServiceUrl:localhost}
 product.service.port: ${productServicePort:8886}
 order.service.url: ${orderServiceUrl:localhost}
-order.service.port: ${orderServicePort:8887}
+order.service.port: ${orderServicePort:7887}
+secret.key: Maiyonaisu1102
