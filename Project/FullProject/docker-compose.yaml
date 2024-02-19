@@ -113,6 +113,46 @@ services:
         condition: service_healthy
     healthcheck:
       test: [ "CMD-SHELL", "netstat -an | grep -q 8886" ]
+  order-host:
+    image: 'mysql:latest'
+    container_name: order-host
+    networks:
+      - maiyon-network
+    restart: always
+    environment:
+      - MYSQL_DATABASE=order-db
+      - MYSQL_ROOT_PASSWORD=S0meth!ng976431
+    ports:
+      - '7873:3306'
+    expose:
+      - 3306
+  order-service:
+    image: order-service-image
+    container_name: order-service
+    networks:
+      - maiyon-network
+    build:
+      context: ./Order_Service
+    ports:
+      - "7887:8887"
+    expose:
+      - 8887
+    environment:
+      - containerName=order-service
+      - springCloudUrl=spring-cloud
+      - springCloudPort=8880
+      - orderDbHost=order-host
+      - orderDbPort=3306
+      - orderDbName=order-db
+      - orderDbUsername=root
+      - orderDbPassword=S0meth!ng976431
+      - eurekaServerUrl=eureka-server
+      - eurekaServerPort=8881
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "netstat -an | grep -q 8887" ]
   spring-api-gateway:
     image: api-gateway-image
     container_name: spring-api-gateway
@@ -137,6 +177,8 @@ services:
       auth-service:
         condition: service_healthy
       product-service:
+        condition: service_healthy
+      order-service:
         condition: service_healthy
     healthcheck:
       test: [ "CMD-SHELL", "netstat -an | grep -q 8882" ]

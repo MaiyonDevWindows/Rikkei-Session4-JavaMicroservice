@@ -19,6 +19,10 @@ docker-compose-deploy:
 	gradle build -x test
 	cd ..
 
+	cd Order_Service
+	gradle build -x test
+	cd ..
+
 	docker-compose up -d
 docker-compose-stop:
 	docker-compose down

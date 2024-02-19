@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-@FeignClient(url = "http://localhost:8886/v1/admin/products",name = "Product")
+@FeignClient(url = "http://product-service:8886/v1/admin/products",name = "Product")
 public interface IProductService {
     @GetMapping("/getAll")
     CommonReceive<List<ProductReceive>> getAll();

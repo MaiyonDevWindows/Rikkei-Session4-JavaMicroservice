@@ -40,7 +40,7 @@ public class SpringApiGatewayApplication {
                 "/v1/admin/categories","/v1/admin/categories/**","/v1/user/categories","/v1/user/categories/**",
                 "/v1/admin/products","/v1/admin/products/**","/v1/user/products","/v1/user/products/**")
                     .filters(f->f.filters(authenticationFilter)).uri("http://" + productServiceUrl + ":" + productServicePort + "/"))
-            .route(r->r.path("/v1/admin/order","/v1/user/order","/v1/admin/shopping-cart","/v1/user/shopping-cart")
+            .route(r->r.path("/v1/admin/order/**","/v1/user/order/**","/v1/admin/shopping-cart/**","/v1/user/shopping-cart/**")
                     .filters(f->f.filters(authenticationFilter)).uri("http://" + orderServiceUrl + ":" + orderServicePort + "/"))
             .build();
     }
